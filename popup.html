@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title></title>
     <link rel="stylesheet" href="">
+    <link href="https://fonts.googleapis.com/css?family=Russo+One|Ubuntu&display=swap" rel="stylesheet">
+
     <style>
         img {
             width: 100%;
@@ -17,8 +19,8 @@
             padding: 10px;
             background: #ececec;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
-            grid-gap: 5px;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            grid-gap: 10px;
 
 
         }
@@ -38,8 +40,28 @@
             background-color: red;
         }
 
-        h1 {
+        h1,
+        h3 {
             text-align: center;
+            font-family: 'Russo One',
+                sans-serif;
+        }
+
+        h3 {
+            font-size: 1.6em;
+        }
+
+        p {
+            font-family: 'Ubuntu',
+                sans-serif;
+        }
+
+        button {
+            padding-bottom: 0;
+            font-family: 'Ubuntu',
+                sans-serif;
+            margin-bottom: 0;
+            font-size: 1.1em;
         }
 
         #detalje {
@@ -57,7 +79,7 @@
         }
 
         #detalje article {
-            margin: 3em;
+            margin: 0 6em 0 6em;
             padding: 2em;
             background-color: white;
             cursor: pointer;
@@ -71,14 +93,15 @@
 </head>
 
 <body>
-    <h1>Alle</h1>
+    <div><img src="logo.jpg"> </div>
+    <h1>Menu</h1>
     <nav>
-        <button class="filter" data-køn="alle">Alle</button>
-        <button class="filter" data-køn="m">Mænd</button>
-        <button class="filter" data-køn="k">Kvinder</button>
-        <button class="filter" data-køn="andet">Andet</button>
-
-        <button class="alder" data-alder="55">Alder: Over 55</button>
+        <button class="filter" data-kategori="alle">Alle</button>
+        <button class="filter" data-kategori="forretter">Forretter</button>
+        <button class="filter" data-kategori="hovedretter">Hovedretter</button>
+        <button class="filter" data-kategori="desserter">Desserter</button>
+        <button class="filter" data-kategori="sideorders">Sideorders</button>
+        <button class="filter" data-kategori="drikkevarer">Drikkevarer</button>
     </nav>
 
     <section id="data-container"></section>
@@ -101,24 +124,24 @@
 
     <section id="detalje" class="skjul">
         <button>X</button>
-        <article id="person">
-            <h1>Navn</h1>
-            <img src="">
-            <p>Religion</p>
-            <p>Hobby</p>
+        <article class="retter">
+
+            <h3 class="navn">Navn</h3>
+            <p>Kategori</p>
+            <p>Oprindelse</p>
+            <p>Beskrivelse</p>
+            <img src="" alt="" class="profil-billede">
         </article>
     </section>
 
     <script>
         document.addEventListener("DOMContentLoaded", start);
 
-        let personer = [];
-        const endpoint = "https://spreadsheets.google.com/feeds/list/1XWWbfWszD7f4jHqp51V_oT3pkHuR-ceEUw4YtrvK7F0/od6/public/values?alt=json";
+        let retter = [];
+        const endpoint = "https://spreadsheets.google.com/feeds/list/17Dd7DvkPaFamNUdUKlrFgnH6POvBJXac7qyiS6zNRw0/od6/public/values?alt=json";
         const detalje = document.querySelector("#detalje");
 
         let filter = "alle";
-        let alder = 0;
-
 
         function start() {
             console.log("start");
@@ -129,16 +152,15 @@
             console.log("Data");
             const response = await fetch(endpoint);
             console.log(response);
-            personer = await response.json();
-            console.log(personer);
-            visPersoner();
+            retter = await response.json();
+            console.log(retter);
+            visRetter();
             addEventlistenersToButtons();
 
         }
 
         function addEventlistenersToButtons() {
             console.log("Knap Eventlisteners");
-            document.querySelector(".alder").addEventListener("click", alderFiltrering);
             document.querySelectorAll(".filter").forEach(elm => {
                 elm.addEventListener("click", filtrering);
             })
@@ -146,49 +168,32 @@
 
         function filtrering() {
             console.log("Filtrering");
-            filter = this.dataset.køn;
-            document.querySelector("h1").textContent = this.textContent;
+            filter = this.dataset.kategori;
             document.querySelectorAll(".filter").forEach(elm => {
                 elm.classList.remove("valgt");
             })
             this.classList.add("valgt");
-            visPersoner();
+            visRetter();
         }
 
-        function alderFiltrering() {
 
-            if (alder == 0) {
-                alder = parseInt(this.dataset.alder);
-                this.classList.add("valgt");
-            } else {
-                alder = 0;
-                this.classList.remove("valgt");
-
-            }
-            visPersoner();
-        }
-
-        function visPersoner() {
-            console.log("visPersoner");
+        function visRetter() {
+            console.log("visRetter");
 
             const destination = document.querySelector("article");
             const container = document.querySelector("#data-container");
-            const personerTemplate = document.querySelector("template");
+            const retterTemplate = document.querySelector("template");
             container.innerHTML = "";
 
-            personer.feed.entry.forEach(person => {
-                if ((filter == "alle" || filter == person.gsx$sex.$t) && (person.gsx$alder.$t > alder)) {
-                    let klon = personerTemplate.cloneNode(true).content;
-                    klon.querySelector("h3").textContent = `${person.gsx$navn.$t} ${person.gsx$efternavn.$t}`;
-                    klon.querySelector("img").src = person.gsx$billede.$t;
-                    klon.querySelector("p:nth-child(3)").textContent += `Køn: ${person.gsx$sex.$t}`;
-                    klon.querySelector("p:nth-child(4)").textContent += `Alder: ${person.gsx$alder.$t}`;
-                    klon.querySelector("p:nth-child(5)").textContent += `Religion: ${person.gsx$religion.$t}`;
-                    klon.querySelector("p:nth-child(6)").textContent += `Hobby: ${person.gsx$hobby.$t}`;
-                    klon.querySelector("p:nth-child(7)").textContent += `Job: ${person.gsx$job.$t}`;
-                    klon.querySelector("p:nth-child(8)").textContent += `By: ${person.gsx$by.$t}`;
-                    klon.querySelector("p:nth-child(9)").textContent += `RPC: ${person.gsx$rpc.$t}`;
-                    klon.querySelector("article").addEventListener("click", () => visDetalje(person));
+            retter.feed.entry.forEach(ret => {
+                if (filter == "alle" || filter == ret.gsx$kategori.$t) {
+                    let klon = retterTemplate.cloneNode(true).content;
+                    klon.querySelector("h3").textContent = `${ret.gsx$navn.$t}`;
+                    klon.querySelector("img").src = "imgs/small/" + ret.gsx$billede.$t + "-sm.jpg";
+                    klon.querySelector("p:nth-child(3)").textContent += `Pris: ${ret.gsx$pris.$t} dkk,-`;
+                    klon.querySelector("p:nth-child(4)").textContent += `Kategori: ${ret.gsx$kategori.$t}`;
+                    klon.querySelector("p:nth-child(5)").textContent += `Beskrivelse: ${ret.gsx$kort.$t}`;
+                    klon.querySelector("article").addEventListener("click", () => visDetalje(ret));
 
                     container.appendChild(klon);
 
@@ -200,15 +205,20 @@
             })
         }
 
-        function visDetalje(person) {
+        function visDetalje(ret) {
             detalje.classList.remove("skjul");
             detalje.querySelector("button").addEventListener("click", () => detalje.classList.add("skjul"));
-            console.log(person.gsx$navn.$t);
-            detalje.querySelector("h1").textContent = person.gsx$navn.$t;
-            detalje.querySelector("p").textContent = "religion: " + person.gsx$religion.$t;
-            detalje.querySelector("p + p").textContent = "hobby: " + person.gsx$hobby.$t;
-            detalje.querySelector("img").src = person.gsx$billede.$t;
-            detalje.querySelector("img").alt = "portræt af " + person.gsx$navn.$t + person.gsx$efternavn.$t;
+            console.log(ret.gsx$navn.$t);
+
+
+            detalje.querySelector(".navn").textContent = ret.gsx$navn.$t;
+            detalje.querySelector(".navn").textContent += " - " + ret.gsx$pris.$t + " dkk,-";
+            detalje.querySelector("img").src = "imgs/large/" + ret.gsx$billede.$t + ".jpg";
+            detalje.querySelector("p:nth-child(2)").textContent = `Kategori: ${ret.gsx$kategori.$t}`;
+            detalje.querySelector("p:nth-child(3)").textContent = `Oprindelse: Retten stammer originalt fra ${ret.gsx$oprindelse.$t}`;
+            detalje.querySelector("p:nth-child(4)").textContent = `Beskrivelse: ${ret.gsx$lang.$t}`;
+
+
 
 
 
