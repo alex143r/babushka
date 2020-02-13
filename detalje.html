@@ -4,7 +4,11 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title></title>
+    <link href="https://fonts.googleapis.com/css?family=Russo+One|Ubuntu&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="">
+
     <style>
         img {
             width: 100%;
@@ -16,8 +20,7 @@
             position: fixed;
             width: 100vw;
             height: 100vh;
-            top: 0;
-            left: 0;
+
             overflow: scroll;
         }
 
@@ -28,6 +31,10 @@
             font-size: 2rem;
             cursor: pointer;
             margin: 1em;
+            padding-bottom: 0;
+            font-family: 'Ubuntu',
+                sans-serif;
+            margin-bottom: 0;
         }
 
         #detalje .retter {
@@ -36,21 +43,51 @@
             margin: auto;
             padding: 4rem;
             background: white;
+            margin-top: 0;
+            padding-top: 0;
         }
 
         #skjul {
             display: none;
         }
+
+        h1,
+        h3 {
+            text-align: center;
+            font-family: 'Russo One',
+                sans-serif;
+        }
+
+        h3 {
+            padding-top: 0;
+            margin-top: 0;
+            font-size: 1.6em;
+        }
+
+        p {
+            font-family: 'Ubuntu',
+                sans-serif;
+        }
+
+        section # {
+            font-family: 'Ubuntu',
+                sans-serif;
+            font-size: 1.1em;
+            margin-bottom: 0;
+        }
+
     </style>
 </head>
 
 <body>
+    <div><img src="logo.jpg"> </div>
 
     <section id="detalje" class="skjul">
-
         <button id="luk">↶</button>
+
         <article class="retter">
-            <h2 class="navn">Navn</h2>
+
+            <h3 class="navn">Navn</h3>
             <p>Kategori</p>
             <p>Oprindelse</p>
             <p>Beskrivelse</p>
@@ -101,5 +138,8 @@
                 }
             });
         }
+
     </script>
-</body></html>
+</body>
+
+</html>
