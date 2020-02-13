@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <style>
+        img {
+            width: 100%;
+            height 60%;
+            object-fit: contain;
+        }
+
+        #detalje {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            overflow: scroll;
+        }
+
+        #detalje #luk {
+            position: sticky;
+            top: 10;
+            left: 0;
+            font-size: 2rem;
+            cursor: pointer;
+            margin: 1em;
+        }
+
+        #detalje .retter {
+            width: 60vw;
+            min-height: 50vh;
+            margin: auto;
+            padding: 4rem;
+            background: white;
+        }
+
+        #skjul {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <section id="detalje" class="skjul">
+
+        <button id="luk">↶</button>
+        <article class="retter">
+            <h2 class="navn">Navn</h2>
+            <p>Kategori</p>
+            <p>Oprindelse</p>
+            <p>Beskrivelse</p>
+            <img src="" alt="" class="profil-billede">
+        </article>
+    </section>
+
+
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const id = urlParams.get("id");
+        console.log(id);
+
+        let retter = [];
+
+        const endpoint = "https://spreadsheets.google.com/feeds/list/17Dd7DvkPaFamNUdUKlrFgnH6POvBJXac7qyiS6zNRw0/od6/public/values?alt=json";
+
+        const detalje = document.querySelector("#detalje");
+
+        document.addEventListener("DOMContentLoaded", start);
+
+        function start() {
+            loadData();
+        }
+        async function loadData() {
+            const response = await fetch(endpoint);
+            retter = await response.json();
+            console.log(retter);
+
+            visRetter();
+        }
+
+        function visRetter() {
+            detalje.querySelector("button").addEventListener("click", () => {
+                history.back();
+            });
+            retter.feed.entry.forEach(ret => {
+                if (ret.gsx$id.$t == id) {
+                    detalje.querySelector(".navn").textContent = ret.gsx$navn.$t;
+                    detalje.querySelector(".navn").textContent += " - " + ret.gsx$pris.$t + " dkk,-";
+                    detalje.querySelector("img").src = "imgs/large/" + ret.gsx$billede.$t + ".jpg";
+                    detalje.querySelector("p:nth-child(2)").textContent = `Kategori: ${ret.gsx$kategori.$t}`;
+                    detalje.querySelector("p:nth-child(3)").textContent = `Oprindelse: Retten stammer originalt fra ${ret.gsx$oprindelse.$t}`;
+                    detalje.querySelector("p:nth-child(4)").textContent = `Beskrivelse: ${ret.gsx$lang.$t}`;
+
+
+                }
+            });
+        }
+    </script>
+</body></html>
