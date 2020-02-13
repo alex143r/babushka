@@ -79,14 +79,34 @@
         }
 
         #detalje article {
-            margin: 0 6em 0 6em;
-            padding: 2em;
+            margin: 0 6em;
+            padding: 2em 10em;
             background-color: white;
             cursor: pointer;
+            justify-content: center;
+            text-align: center;
         }
 
         .skjul {
             display: none;
+        }
+
+        #detalje img {
+            width: 100%;
+        }
+
+        @media only screen and (max-width: 1200px) {
+            #detalje article {
+                margin: 0 6em;
+                padding: 2em 4em;
+            }
+        }
+
+        @media only screen and (max-width: 950px) {
+            #detalje article {
+                margin: 0 2em;
+                padding: 1em 1em;
+            }
         }
     </style>
 
